@@ -52,17 +52,19 @@ class Reservasi:
         print(f"Layanan {layanan.nama} ditambahkan (Rp{biaya:,.0f})")
 
     def tampilkan_tagihan(self):
-        print(f"\n=== RINCIAN TAGIHAN - {self.pelanggan.nama} ===")
-        print(f"Durasi: {self.durasi_malam} malam x Rp{self.kamar.harga:,.0f}")
-        print(f"Subtotal kamar : Rp{self.biaya_kamar:,.0f}")
+        print(f"\n=== RINCIAN TAGIHAN - atas {self.pelanggan.nama} ===")
+        print(
+            f"Durasi                   : {self.durasi_malam} malam x Rp{self.kamar.harga:,.0f}"
+        )
+        print(f"Subtotal kamar           : Rp{self.biaya_kamar:,.0f}")
 
         if self.layanan_tambahan:
             print("\nLayanan Tambahan:")
             for l in self.layanan_tambahan:
-                print(" -", l)
+                print("-", l)
             print(f"Total biaya tambahan : Rp{self.biaya_tambahan:,.0f}")
 
-        print(f"\nTOTAL TAGIHAN AKHIR : Rp{self.total_tagihan:,.0f}")
+        print(f"\nTOTAL TAGIHAN AKHIR    : Rp{self.total_tagihan:,.0f}")
         print(f"Status: {self.status}")
 
     def __str__(self):

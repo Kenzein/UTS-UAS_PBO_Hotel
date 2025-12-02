@@ -15,16 +15,16 @@ hotel = Hotel("Hotel Nusantara")
 
 def menu():
     while True:
-        print(f"\n Sistem Manajemen Hotel Nusantara:")
+        hotel.tampilkan_semua_kamar()
+        print(f"Sistem Manajemen: ")
         print("1. Tambah Kamar Baru")
-        print("2. Tampilkan Semua Kamar")
-        print("3. Buat Reservasi")
-        print("4. Tampilkan Semua Reservasi")
-        print("5. Layanan Tambahan")
-        print("6. Check-In")
-        print("7. Check-Out")
-        print("8. Histori Tagihan")
-        print("9. Keluar dari Sistem")
+        print("2. Buat Reservasi")
+        print("3. Tampilkan Semua Reservasi")
+        print("4. Layanan Tambahan")
+        print("5. Check-In")
+        print("6. Check-Out")
+        print("7. Histori Tagihan")
+        print("8. Keluar dari Sistem")
         try:
             pilihan = int(input("Pilih menu: "))
         except InputError:
@@ -34,15 +34,12 @@ def menu():
         if pilihan == 1:
             nomor = int(input("Nomor Kamar: "))
             tipe = input("Tipe Kamar: ")
-            harga = float(input("Harga per malam: "))
+            harga = int(input("Harga per malam: "))
             kamar = Kamar(nomor, tipe, harga)
             hotel.tambah_kamar(kamar)
             print("\nKamar berhasil ditambahkan.")
-        # Pilihan 2: Menampilkan semua kamar
+        # Pilihan 2: Membuat reservasi
         elif pilihan == 2:
-            hotel.tampilkan_semua_kamar()
-        # Pilihan 3: Membuat reservasi
-        elif pilihan == 3:
             try:
                 nama = str(input("Nama pelanggan: "))
                 kontak = int(input("Kontak pelanggan: "))
@@ -75,16 +72,16 @@ def menu():
                 print(reservasi)
             except HotelError as e:
                 print(f"[Error] {e}")
-        # Pilihan 4:Menampilkan semua reservasi
-        elif pilihan == 4:
+        # Pilihan 3:Menampilkan semua reservasi
+        elif pilihan == 3:
             if not hotel.reservasi_list:
                 print("\nBelum ada reservasi")
             else:
                 print("\nMenelusuri reservasi satu per satu: ")
                 for reservasi in hotel.reservasi_iterator():
                     print(reservasi)
-        # Pilihan 5: Menambah layanan tambahan
-        elif pilihan == 5:
+        # Pilihan 4: Menambah layanan tambahan
+        elif pilihan == 4:
             if not hotel.reservasi_list:
                 print("\nBelum ada reservasi")
                 continue
@@ -110,8 +107,8 @@ def menu():
                 hari = int(input("Durasi Penyewaan (hari): "))
                 reservasi.tambah_layanan(LayananSewaMobil(tipe, hari))
             reservasi.tampilkan_tagihan()
-        # Pilihan 6: Check-In
-        elif pilihan == 6:
+        # Pilihan 5: Check-In
+        elif pilihan == 5:
             if not hotel.reservasi_list:
                 print("\nBelum ada reservasi")
                 continue
@@ -120,8 +117,8 @@ def menu():
             idx = int(input("Pilih nomor reservasi untuk check-in: ")) - 1
             reservasi = hotel.reservasi_list[idx]
             reservasi.check_in()
-        # Pilihan 7: Check-Out
-        elif pilihan == 7:
+        # Pilihan 6: Check-Out
+        elif pilihan == 6:
             if not hotel.reservasi_list:
                 print("\nBelum ada reservasi.")
                 continue
@@ -130,8 +127,8 @@ def menu():
             idx = int(input("Pilih nomor reservasi untuk check-out: ")) - 1
             reservasi = hotel.reservasi_list[idx]
             reservasi.check_out()
-        # Pilihan 8: Menampilkan histori pelanggan
-        elif pilihan == 8:
+        # Pilihan 7: Menampilkan histori pelanggan
+        elif pilihan == 7:
             if not hotel.reservasi_list:
                 print("\nBelum ada histori pelanggan")
                 continue
@@ -140,8 +137,8 @@ def menu():
             idx = int(input("Pilih nomor reservasi: ")) - 1
             reservasi = hotel.reservasi_list[idx]
             reservasi.tampilkan_tagihan()
-        # Pilihan 9: Exit Program
-        elif pilihan == 9:
+        # Pilihan 8: Exit Program
+        elif pilihan == 8:
             print("\nTerima kasih! Program selesai.")
             break
         else:

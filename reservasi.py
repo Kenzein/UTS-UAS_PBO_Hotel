@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from exceptions import KamarTidakTersediaError, TanggalTidakValidError
+from exceptions import KamarTidakTersediaError, TanggalTidakValidError, CheckInError
 from layanan import LayananTambahan
 
 
@@ -27,13 +27,14 @@ class Reservasi:
 
     def check_in(self):
         if self.status != "Dipesan":
-            print("Reservasi tidak dapat check-in. Sudah terisi atau selesai.")
-            return
+            raise CheckInError("Reservasi tidak dapat check-in")
+            # print("Reservasi tidak dapat check-in. Sudah terisi atau selesai.")
+            # return
         self.status = "Terisi"
         self.kamar.ubah_status("Terisi")
-        print(
-            f"Pelanggan {self.pelanggan.nama} telah check-in ke kamar {self.kamar.nomor}."
-        )
+        # print(
+        #     f"Pelanggan {self.pelanggan.nama} telah check-in ke kamar {self.kamar.nomor}."
+        # )
 
     def check_out(self):
         if self.status != "Terisi":
@@ -49,23 +50,34 @@ class Reservasi:
         biaya = layanan.hitung_biaya()
         self.biaya_tambahan += biaya
         self.total_tagihan = self.biaya_kamar + self.biaya_tambahan
-        print(f"Layanan {layanan.nama} ditambahkan (Rp{biaya:,.0f})")
+        # print(f"Layanan {layanan.nama} ditambahkan (Rp{biaya:,.0f})")
 
-    def tampilkan_tagihan(self):
-        print(f"\n=== RINCIAN TAGIHAN - atas {self.pelanggan.nama} ===")
-        print(
-            f"Durasi                   : {self.durasi_malam} malam x Rp{self.kamar.harga:,.0f}"
-        )
-        print(f"Subtotal kamar           : Rp{self.biaya_kamar:,.0f}")
+    def get_ringkasan_tagihan(self):
+        return {
+            "pelanggan": self.pelanggan.nama,
+            "durasi": self.durasi_malam,
+            "subtotal_kamar": self.biaya_kamar,
+            "layanan": self.layanan_tambahan,
+            "biaya_tambahan": self.biaya_tambahan,
+            "total": self.total_tagihan,
+            "status": self.status,
+        }
 
-        if self.layanan_tambahan:
-            print("\nLayanan Tambahan:")
-            for l in self.layanan_tambahan:
-                print("-", l)
-            print(f"Total biaya tambahan : Rp{self.biaya_tambahan:,.0f}")
+    # def tampilkan_tagihan(self):
+    #     print(f"\n=== RINCIAN TAGIHAN - atas {self.pelanggan.nama} ===")
+    #     print(
+    #         f"Durasi                   : {self.durasi_malam} malam x Rp{self.kamar.harga:,.0f}"
+    #     )
+    #     print(f"Subtotal kamar           : Rp{self.biaya_kamar:,.0f}")
 
-        print(f"\nTOTAL TAGIHAN AKHIR    : Rp{self.total_tagihan:,.0f}")
-        print(f"Status: {self.status}")
+    #     if self.layanan_tambahan:
+    #         print("\nLayanan Tambahan:")
+    #         for l in self.layanan_tambahan:
+    #             print("-", l)
+    #         print(f"Total biaya tambahan : Rp{self.biaya_tambahan:,.0f}")
+
+    #     print(f"\nTOTAL TAGIHAN AKHIR    : Rp{self.total_tagihan:,.0f}")
+    #     print(f"Status: {self.status}")
 
     def __str__(self):
         return (
@@ -73,3 +85,22 @@ class Reservasi:
             f"Kamar {self.kamar.nomor} ({self.kamar.tipe}) | "
             f"{self.durasi_malam} malam | Total: Rp{self.total_tagihan:,.0f}"
         )
+
+
+class InvoicePrinter:
+    def cetak(self, reservasi: Reservasi):
+        data = reservasi.get_ringkasan_tagihan()
+        print(f"\n=== RINCIAN TAGIHAN - atas {data['pelanggan']} ===")
+        print(
+            f"Durasi                   : {data['durasi']} malam x Rp{reservasi.kamar.harga:,.0f}"
+        )
+        print(f"Subtotal kamar           : Rp{data['subtotal_kamar']:,.0f}")
+
+        if data["layanan"]:
+            print("\nLayanan Tambahan:")
+            for l in data["layanan"]:
+                print("-", l)
+            print(f"Total biaya tambahan : Rp{data['biaya_tambahan']:,.0f}")
+
+        print(f"\nTOTAL TAGIHAN AKHIR    : Rp{data['total']:,.0f}")
+        print(f"Status: {data['status']}")

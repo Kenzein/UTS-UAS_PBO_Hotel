@@ -32,14 +32,16 @@ class Hotel:
     def tambah_reservasi(self, reservasi):
         self.reservasi_list.append(reservasi)
 
-    def tampilkan_semua_kamar(self):
-        print(f"\nDaftar kamar di {self.nama}:")
+
+class HotelPrinter:
+    def tampilkan_kamar(self, hotel: Hotel):
+        print(f"\nDaftar kamar di {hotel.nama}:")
         print("=" * 62)
         print(
             f"|{'No Kamar':<10} | {'Tipe':<15} | {'Harga per Malam':<15} | {'Status':<10} |"
         )
         print("=" * 62)
-        for kamar in self.kamar_iterator():
+        for kamar in hotel.kamar_iterator():
             harga_format = f"Rp{kamar.harga:,}"
             print(
                 f"|{kamar.nomor:<10} | "
@@ -49,7 +51,7 @@ class Hotel:
             )
         print("=" * 62)
 
-    def tampilkan_semua_reservasi(self):
-        print(f"Daftar Reservasi di {self.nama}:")
-        for i in self.reservasi_iterator():
-            print("-", i)
+    def tampilkan_reservasi(self, hotel: Hotel):
+        print(f"Daftar Reservasi di {hotel.nama}:")
+        for r in hotel.reservasi_iterator():
+            print("-", r)

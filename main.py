@@ -1,7 +1,7 @@
 from kamar import Kamar
 from pelanggan import Pelanggan
-from reservasi import Reservasi
-from hotel import Hotel
+from reservasi import Reservasi, InvoicePrinter
+from hotel import Hotel, HotelPrinter
 from exceptions import HotelError, InputError
 from datetime import datetime
 from layanan import (
@@ -11,11 +11,13 @@ from layanan import (
 )
 
 hotel = Hotel("Hotel Nusantara")
+hotel_printer = HotelPrinter()
+invoice_printer = InvoicePrinter()
 
 
 def menu():
     while True:
-        hotel.tampilkan_semua_kamar()
+        hotel_printer.tampilkan_kamar(hotel)
         print(f"Sistem Manajemen: ")
         print("1. Tambah Kamar Baru")
         print("2. Buat Reservasi")
@@ -44,7 +46,7 @@ def menu():
                 nama = str(input("Nama pelanggan: "))
                 kontak = int(input("Kontak pelanggan: "))
                 pelanggan = Pelanggan(nama, kontak)
-                hotel.tampilkan_semua_kamar()
+                hotel_printer.tampilkan_kamar(hotel)
                 nomor_kamar = int(input("\nNomor kamar yang ingin dipesan: "))
                 kamar_dipilih = next(
                     (k for k in hotel.kamar_list if k.nomor == nomor_kamar), None
@@ -67,7 +69,7 @@ def menu():
                         continue
                     break
                 reservasi = Reservasi(pelanggan, kamar_dipilih, check_in, check_out)
-                hotel.tambah_reservasi(reservasi)
+                hotel_printer.tampilkan_reservasi(hotel)
                 print("\nReservasi berhasil dibuat!")
                 print(reservasi)
             except HotelError as e:
@@ -77,9 +79,7 @@ def menu():
             if not hotel.reservasi_list:
                 print("\nBelum ada reservasi")
             else:
-                print("\nMenelusuri reservasi satu per satu: ")
-                for reservasi in hotel.reservasi_iterator():
-                    print(reservasi)
+                hotel_printer.tampilkan_reservasi(hotel)
         # Pilihan 4: Menambah layanan tambahan
         elif pilihan == 4:
             if not hotel.reservasi_list:
@@ -106,7 +106,7 @@ def menu():
                 tipe = input("Jenis Mobil (sedan/pickup): ")
                 hari = int(input("Durasi Penyewaan (hari): "))
                 reservasi.tambah_layanan(LayananSewaMobil(tipe, hari))
-            reservasi.tampilkan_tagihan()
+            invoice_printer.cetak(reservasi)
         # Pilihan 5: Check-In
         elif pilihan == 5:
             if not hotel.reservasi_list:
@@ -136,7 +136,7 @@ def menu():
                 print(f"{i+1}. {r.pelanggan.nama} - Kamar {r.kamar.nomor}")
             idx = int(input("Pilih nomor reservasi: ")) - 1
             reservasi = hotel.reservasi_list[idx]
-            reservasi.tampilkan_tagihan()
+            invoice_printer.cetak(reservasi)
         # Pilihan 8: Exit Program
         elif pilihan == 8:
             print("\nTerima kasih! Program selesai.")

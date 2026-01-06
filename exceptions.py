@@ -12,3 +12,7 @@ class TanggalTidakValidError(HotelError):
 
 class InputError(HotelError):
     pass
+
+
+class CheckInError(HotelError):
+    pass

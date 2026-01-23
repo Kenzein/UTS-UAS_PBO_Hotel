@@ -69,6 +69,7 @@ def menu():
                         continue
                     break
                 reservasi = Reservasi(pelanggan, kamar_dipilih, check_in, check_out)
+                hotel.tambah_reservasi(reservasi)
                 hotel_printer.tampilkan_reservasi(hotel)
                 print("\nReservasi berhasil dibuat!")
                 print(reservasi)
